@@ -170,4 +170,26 @@ td{
     table{
         width: 100%;
     }
+    #pop{
+        /*display: none;*/
+        z-index: 10;
+        width:200px;
+        height: 200px;
+        background-color: white;
+        position: fixed;
+        top:50px;
+        left:calc(50% - 100px);
+        display: none;
+    }
+    #planPop{
+        display: none;
+        width: 200px;
+        height:200px;
+        background-color: white;
+        position: fixed;
+        top:50px;
+        left:calc(50% - 100px);
+        border:1px solid black;
+        z-index: 10
+    }
 }

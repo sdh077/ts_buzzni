@@ -2,9 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/color.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
-$END$
+<div id="contents">
+    <div class="titleBar">
+        <div id='timeTitle' bind='textContent:name'></div>
+
+        <button onclick="calendar.changeDate(-1)"><</button>
+        <button onclick="calendar.changeDate(1)">></button>
+        <button onclick="calendar.goToday()">오늘</button>
+    </div>
+    <div class="mode">
+        <button onclick="calendar.changeMode(2)">일간</button>
+        <button onclick="calendar.changeMode(1)">주간</button>
+        <button onclick="calendar.changeMode(0)">월간</button>
+        <button onclick="pop()" style="margin-left: 20px;">일정 추가</button>
+        <button onclick="plan.viewplan()">일정 보기</button>
+
+    </div>
+    <div style="clear: both"></div>
+
+    <table id="calendar">
+        <thead id="calHeader">
+        </thead>
+        <tbody id="calBody">
+        </tbody>
+    </table>
+    <div id="todo">
+        <div onclick="plan.viewPlanEdn()">x</div>
+        <div id="todoTitle">날짜를 선택해주세요</div>
+    </div>
+</div>
+<div id="popback" onclick="endPop()">
+</div>
+<div id="planPop">
+    <div onclick="plan.endPop()">x</div>
+    <div id="planControl"></div>
+    <div id="planBtn"></div>
+</div>
+<div id="pop">
+    <div class="header">
+        <div>
+            일정추가
+        </div>
+        <div>
+            <button onclick="endPop()">X</button>
+        </div>
+    </div>
+    <div class="form">
+        <form>
+            <div><span>제목</span><input id="title"></div>
+            <div>
+                <span>시작일시</span>
+                <input id="startDate" type="date">
+                <input id="starttime" type="number" placeholder="10">시
+            </div>
+            <div>
+                <span>종료일시</span>
+                <input id="endDate" type="date">
+                <input id="endtime" type="number" placeholder="10">시
+            </div>
+            <div><span>메모</span><input id="memo"></div>
+            <div><span>색상 선택</span>
+                <select id="color">
+                    <option value="purple">purple</option>
+                    <option value="blue">blue</option>
+                    <option value="red">red</option>
+                    <option value="gray">gray</option>
+                    <option value="yellow">yellow</option>
+                    <option value="black">black</option>
+                </select>
+            </div>
+            <div onclick="plan.addPlan();">저장</div>
+        </form>
+    </div>
+</div>
+<script>var exports = {}</script>
+<script src="javascripts/main.js"></script>
+
 </body>
 </html>

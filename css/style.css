@@ -4,12 +4,17 @@ body{
 table{
     border-collapse: collapse;
     border:1px solid rgba(0,0,0,0.1);
+    width: 800px;
 }
 #calendar{
-    width:70%;
+    float: left;
 }
 thead{
     background-color: lightgrey;
+}
+td{
+    border : 1px solid;
+    width: 95px;
 }
 .month{
     position: relative;
@@ -23,6 +28,11 @@ thead{
     width:12%;
     /*padding: 1px;*/
     height: 13px;
+    position: relative;
+}
+.daily{
+    position: relative;
+
 }
 #timeTitle{
     float: left;
@@ -52,19 +62,19 @@ thead{
 }
 .orderStart{
     position: absolute;
-    width:95%;
+    width:97%;
     margin-left:5%;
     z-index: 3;
 }
 .orderEnd{
     position: absolute;
-    width:95%;
+    width:97%;
     margin-right:5%;
     z-index: 3;
 }
 .order{
     position: absolute;
-    width:100%;
+    width:101%;
     z-index: 3;
 }
 .order0{
@@ -77,26 +87,31 @@ thead{
 .order2{
     top: 62px;
 }
-.red{
-    background-color: red;
+.over{
+    top: 82px;
 }
-.purple{
-    background-color: purple;
-    color: white;
+.weekbar{
+    position: absolute;
+    top:1px;
+    z-index: 8;
 }
-.blue {
-    background-color: blue;
-    color:white;
+.todo{
+    width:30%;
+    height:100%;
+    float: left;
 }
-.yellow{
-    background-color: lightgoldenrodyellow;
+.weekETC{
+    left: 70%;
+    position: absolute;
+    background: white;
+    top:0;
 }
-.gray{
-    background-color: gray;
-}
-.black{
-    color: white;
-    background-color: black;
+.dailyETC{
+    left: 73%;
+    position: absolute;
+    background: white;
+    top:0;
+    width:100px;
 }
 #popback{
     z-index: 9;
@@ -117,4 +132,42 @@ thead{
     top:100px;
     left:calc(50% - 200px);
     display: none;
+}
+#planPop{
+    display: none;
+    width: 400px;
+    height:400px;
+    background-color: white;
+    position: fixed;
+    top:100px;
+    left:calc(50% - 200px);
+    border:1px solid black;
+    z-index: 10
+}
+#todoTitle{
+    width:384px;
+}
+#todo{
+    float: left;
+    display: none;
+}
+@media only screen and (max-width: 1184px) {
+    #todoTitle{
+    }
+    #todo{
+        display: none;
+        width: 400px;
+        height:400px;
+        background-color: white;
+        position: fixed;
+        top:100px;
+        left:calc(50% - 200px);
+        border:1px solid black;
+        z-index: 10
+    }
+}
+@media only screen and (max-width: 800px) {
+    table{
+        width: 100%;
+    }
 }

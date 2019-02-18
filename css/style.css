@@ -1,0 +1,120 @@
+body{
+    margin:0;
+}
+table{
+    border-collapse: collapse;
+    border:1px solid rgba(0,0,0,0.1);
+}
+#calendar{
+    width:70%;
+}
+thead{
+    background-color: lightgrey;
+}
+.month{
+    position: relative;
+    width:12%;
+    /*padding: 3px;*/
+    height: 102px;
+    vertical-align: top;
+}
+.week{
+
+    width:12%;
+    /*padding: 1px;*/
+    height: 13px;
+}
+#timeTitle{
+    float: left;
+}
+.titleBar{
+    float: left;
+}
+.mode{
+    float: left;
+    margin-left:20%;
+}
+.sun{
+    color: red;
+}
+.sat{
+    color: blue;
+}
+.today{
+    background-color: yellow;
+}
+.orderBoth{
+    position: absolute;
+    width:90%;
+    margin: 0 5%;
+    z-index: 3;
+
+}
+.orderStart{
+    position: absolute;
+    width:95%;
+    margin-left:5%;
+    z-index: 3;
+}
+.orderEnd{
+    position: absolute;
+    width:95%;
+    margin-right:5%;
+    z-index: 3;
+}
+.order{
+    position: absolute;
+    width:100%;
+    z-index: 3;
+}
+.order0{
+    top:22px;
+}
+.order1{
+    top:42px;
+
+}
+.order2{
+    top: 62px;
+}
+.red{
+    background-color: red;
+}
+.purple{
+    background-color: purple;
+    color: white;
+}
+.blue {
+    background-color: blue;
+    color:white;
+}
+.yellow{
+    background-color: lightgoldenrodyellow;
+}
+.gray{
+    background-color: gray;
+}
+.black{
+    color: white;
+    background-color: black;
+}
+#popback{
+    z-index: 9;
+    background-color: rgba(0,0,0,0.7);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: none;
+}
+#pop{
+    /*display: none;*/
+    z-index: 10;
+    width:400px;
+    height: 400px;
+    background-color: white;
+    position: fixed;
+    top:100px;
+    left:calc(50% - 200px);
+    display: none;
+}

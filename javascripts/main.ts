@@ -645,11 +645,3 @@ function endPop(){
     popback.style.display = "none";
     pop.style.display = "none";
 }
-window.onload = function () {
-    
-let plan = new Plan;
-let calendar = new Calendar;
-    
-    
-}
-

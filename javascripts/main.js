@@ -25,8 +25,8 @@ var Plan = /** @class */ (function () {
         var today = new Date();
         document.getElementById('startDate').value = today.getFullYear() + "-" + ((today.getMonth() + 1) > 9 ? (today.getMonth() + 1) : "0" + (today.getMonth() + 1)) + "-" + (today.getDate());
         document.getElementById('endDate').value = today.getFullYear() + "-" + ((today.getMonth() + 1) > 9 ? (today.getMonth() + 1) : "0" + (today.getMonth() + 1)) + "-" + (today.getDate() + 1);
-        document.getElementById('starttime').value = today.getHours();
-        document.getElementById('endtime').value = today.getHours();
+        document.getElementById('starttime').value = today.getHours() + "";
+        document.getElementById('endtime').value = today.getHours() + "";
     };
     //local storage에 현재 있는 plan들을 저장한다
     Plan.prototype.saveLocal = function () {
@@ -67,15 +67,15 @@ var Plan = /** @class */ (function () {
         if (document.getElementById('title').value == "") {
             alert('제목을 입력해주세요');
         }
-        else if (document.getElementById('starttime').value > 24 || document.getElementById('starttime').value < 0 || document.getElementById('endtime').value > 24 || document.getElementById('endtime').value < 0)
+        else if (Number(document.getElementById('starttime').value) > 24 || Number(document.getElementById('starttime').value) < 0 || Number(document.getElementById('endtime').value) > 24 || Number(document.getElementById('endtime').value) < 0)
             alert('시간은 0~24사이로 입력해 주세요');
         else {
             var sd = new Date(document.getElementById('startDate').value);
             sd = timeset(sd);
-            sd.setHours(sd.getHours() + document.getElementById('starttime').value);
+            sd.setHours(sd.getHours() + Number(document.getElementById('starttime').value));
             var ed = new Date(document.getElementById('endDate').value);
             ed = timeset(ed);
-            ed.setHours(ed.getHours() + document.getElementById('endtime').value);
+            ed.setHours(ed.getHours() + Number(document.getElementById('endtime').value));
             if (ed >= sd) {
                 var data = {
                     groupNo: Date.now(),
@@ -195,8 +195,8 @@ var Plan = /** @class */ (function () {
         planPop.style.display = "block";
         var plan = this.getPlanGroup(groupNo);
         var planControl = document.getElementById('planControl');
-        var startTxt = plan.startDate.getFullYear() + "-" + (((plan.startDate.getMonth() + 1) > 9) ? (plan.startDate.getMonth() + 1) : "0" + (plan.startDate.getMonth() + 1)) + "-" + plan.startDate.getDate();
-        var endTxt = plan.endDate.getFullYear() + "-" + (((plan.endDate.getMonth()) + 1 > 9) ? (plan.endDate.getMonth() + 1) : "0" + (plan.endDate.getMonth() + 1)) + "-" + plan.endDate.getDate();
+        var startTxt = plan.startDate.getFullYear() + "-" + (((plan.startDate.getMonth() + 1) > 9) ? (plan.startDate.getMonth() + 1) : "0" + (plan.startDate.getMonth() + 1)) + "-" + (Number(plan.startDate.getDate()) < 10 ? "0" + plan.startDate.getDate() : plan.startDate.getDate());
+        var endTxt = plan.endDate.getFullYear() + "-" + (((plan.endDate.getMonth()) + 1 > 9) ? (plan.endDate.getMonth() + 1) : "0" + (plan.endDate.getMonth() + 1)) + "-" + (Number(plan.endDate.getDate()) < 10 ? "0" + plan.endDate.getDate() : plan.endDate.getDate());
         planControl.innerHTML = "<div>제목: <input id='editTitle' value='" + plan.title + "'></div>";
         planControl.innerHTML += "<div>시작일: <input id='editStartDate' type='date' value='" + startTxt + "'><input id='editstarttime' type='number' value='" + plan.startDate.getHours() + "'></div>";
         planControl.innerHTML += "<div>종료일: <input id='editEndDate' type='date' value='" + endTxt + "'><input id='editendtime' type='number' value='" + plan.endDate.getHours() + "'></div>";
@@ -228,10 +228,10 @@ var Plan = /** @class */ (function () {
         else {
             var sd = new Date(document.getElementById('editStartDate').value);
             sd = timeset(sd);
-            sd.setHours(sd.getHours() + document.getElementById('editstarttime').value);
+            sd.setHours(sd.getHours() + Number(document.getElementById('editstarttime').value));
             var ed = new Date(document.getElementById('editEndDate').value);
             ed = timeset(ed);
-            ed.setHours(ed.getHours() + document.getElementById('editendtime').value);
+            ed.setHours(ed.getHours() + Number(document.getElementById('editendtime').value));
             if (ed >= sd) {
                 var plan_1 = this.getPlanGroup(groupNo);
                 plan_1.title = document.getElementById('editTitle').value;
@@ -354,7 +354,7 @@ var Calendar = /** @class */ (function () {
             else {
                 cell.className = "month";
             }
-            cell.setAttribute('id', i + 1);
+            cell.setAttribute('id', String(i) + 1);
             this_1.plan.planSearch(new Date(this_1.time.getFullYear(), this_1.time.getMonth(), 0), new Date(this_1.time.getFullYear(), this_1.time.getMonth() + 1, 0), this_1.time.getFullYear(), this_1.time.getMonth(), i + 1, function (planList) {
                 var inner = "<div onclick='plan.showPlan(" + _this.time.getFullYear() + "," + (_this.time.getMonth() + 1) + "," + (i + 1) + ")'>" + (i + 1) + "</div>";
                 var over = 0;
@@ -584,6 +584,11 @@ var Calendar = /** @class */ (function () {
     };
     return Calendar;
 }());
+function timeset(date) {
+    return new Date(date.setHours(date.getHours() - 9));
+}
+var plan = new Plan;
+var calendar = new Calendar;
 function pop() {
     var pop = document.getElementById('pop');
     var popback = document.getElementById('popback');
@@ -598,8 +603,7 @@ function endPop() {
     popback.style.display = "none";
     pop.style.display = "none";
 }
-function timeset(date) {
-    return new Date(date.setHours(date.getHours() - 9));
-}
-var plan = new Plan;
-var calendar = new Calendar;
+window.onload = function () {
+    var plan = new Plan;
+    var calendar = new Calendar;
+};

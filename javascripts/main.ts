@@ -23,11 +23,11 @@ export class Plan{
         }
 
         let today = new Date();
-        document.getElementById('startDate').value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate());
-        document.getElementById('endDate').value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate()+1);
+        (<HTMLInputElement>document.getElementById('startDate')).value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate());
+        (<HTMLInputElement>document.getElementById('endDate')).value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate()+1);
 
-        document.getElementById('starttime').value = today.getHours();
-        document.getElementById('endtime').value = today.getHours();
+        (<HTMLInputElement>document.getElementById('starttime')).value = today.getHours()+"";
+        (<HTMLInputElement>document.getElementById('endtime')).value = today.getHours()+"";
     }
 
     //local storage에 현재 있는 plan들을 저장한다
@@ -36,11 +36,11 @@ export class Plan{
     }
 
     //기간 동안 있는 plan들을 가져온다
-    planSearch(s,e,year,month,day,cb){
-        let list = [];
+    planSearch(s:any,e:any,year:any,month:any,day:any,cb:any){
+        let list:any = [];
         // s = timeset(s);
         // e = timeset(e);
-        this.groupToitem(s,e, plans=> {
+        this.groupToitem(s,e, (plans:any)=> {
             if(plans.length == 0){
                 cb(list);
             }
@@ -56,7 +56,7 @@ export class Plan{
             }
         });
     }
-    dateDiff(date1, date2) {
+    dateDiff(date1:any, date2:any) {
         let d1 = new Date(date1.getFullYear(),date1.getMonth(),date1.getDate());
         let d2 = new Date(date2.getFullYear(),date2.getMonth(),date2.getDate());
         d1.setHours(4);
@@ -69,26 +69,26 @@ export class Plan{
 
     //plan 추가 함수
     addPlan(){
-        if(document.getElementById('title').value==""){
+        if((<HTMLInputElement>document.getElementById('title')).value==""){
             alert('제목을 입력해주세요')
-        } else if(document.getElementById('starttime').value>24 ||document.getElementById('starttime').value <0 ||document.getElementById('endtime').value>24 ||document.getElementById('endtime').value<0)
+        } else if(Number((<HTMLInputElement>document.getElementById('starttime')).value)>24 ||Number((<HTMLInputElement>document.getElementById('starttime')).value) <0 ||Number((<HTMLInputElement>document.getElementById('endtime')).value)>24 ||Number((<HTMLInputElement>document.getElementById('endtime')).value)<0)
             alert('시간은 0~24사이로 입력해 주세요')        
         else {
-            let sd = new Date(document.getElementById('startDate').value);
+            let sd = new Date((<HTMLInputElement>document.getElementById('startDate')).value);
             sd = timeset(sd);
-            sd.setHours(sd.getHours()+document.getElementById('starttime').value)
+            sd.setHours(sd.getHours()+Number((<HTMLInputElement>document.getElementById('starttime')).value))
 
-            let ed = new Date(document.getElementById('endDate').value);
+            let ed = new Date((<HTMLInputElement>document.getElementById('endDate')).value);
             ed = timeset(ed);
-            ed.setHours(ed.getHours()+document.getElementById('endtime').value)
+            ed.setHours(ed.getHours()+Number((<HTMLInputElement>document.getElementById('endtime')).value))
             if(ed>=sd){
                 let data = {
                     groupNo:Date.now(),
-                    title:document.getElementById('title').value,
-                    color:document.getElementById('color').value,
+                    title:(<HTMLInputElement>document.getElementById('title')).value,
+                    color:(<HTMLInputElement>document.getElementById('color')).value,
                     startDate:sd,
                     endDate:ed,
-                    memo:document.getElementById('memo').value,
+                    memo:(<HTMLInputElement>document.getElementById('memo')).value,
                 };
                 this.planGroup.push(data);
                 this.saveLocal();
@@ -101,7 +101,7 @@ export class Plan{
 
 
     }
-    getPlanGroup(no){
+    getPlanGroup(no:number){
         let nothing=0;
         for(let i = 0; i<this.planGroup.length;i++){
             if(this.planGroup[i].groupNo == no){
@@ -112,31 +112,31 @@ export class Plan{
                 return 0
         }
     }
-    getPlans(startDate, endDate,cb){
-        let list = [];
+    getPlans(startDate:any, endDate:any,cb:any){
+        let list:any = [];
         if(this.planGroup.length==0)
             cb(list);
         for(let i = 0 ; i < this.planGroup.length ; i++){
             if(this.planGroup[i].endDate >=startDate && this.planGroup[i].startDate < endDate)
                 list.push(this.planGroup[i]);
             if(i == this.planGroup.length-1){
-                list.sort((a,b)=> a.startDate - b.startDate);
+                list.sort((a:any,b:any)=> a.startDate - b.startDate);
                 cb(list);
             }
         }
     }
 
     //plan들을 화면에 보여주기 쉽게 영역별로 나누는 작업
-    groupToitem(s,e,cb){
-        plan.getPlans(s,e,list=>{
+    groupToitem(s:any,e:any,cb:any){
+        plan.getPlans(s,e,(list:any)=>{
             if(list.length == 0)
                 cb([]);
-            let check =[];
-            let plans = [];
+            let check:any =[];
+            let plans:any = [];
             for(let i =0 ; i<this.dateDiff(e,s)-1 ;i++)
                 check[i]=-1;
             for(let i = 0 ; i<list.length;i++){
-                let diff = this.dateDiff(list[i].endDate,list[i].startDate)-1;
+                let diff:number = this.dateDiff(list[i].endDate,list[i].startDate)-1;
                 for(let j=0; j<diff;j++) {
                     let saveDate = new Date(list[i].startDate);
                     saveDate.setDate(saveDate.getDate()+j);
@@ -178,12 +178,12 @@ export class Plan{
         let todo = document.getElementById('todo');
         todo.style.display = "none";
     }
-    showPlan(year,month,day){
+    showPlan(year:any,month:any,day:any){
         let todoTitle = document.getElementById('todoTitle');
         let sdate = new Date(year,month-1,day);
         let edate = new Date(year,month-1,day+1);
         todoTitle.innerHTML = "<div>"+year+"년"+ month+"월"+day+"일 할 일"+"</div>";
-        plan.getPlans(sdate,edate,list =>{
+        plan.getPlans(sdate,edate,(list:any) =>{
             for(let i=0;i< list.length;i++){
                 todoTitle.innerHTML +=
                     "<div>"
@@ -198,21 +198,22 @@ export class Plan{
     }
 
     //계획 선택시 팝업을 통해 보여주며 수정과 삭제가 가능하다
-    planPop(groupNo){
+    planPop(groupNo:any){
         let planPop = document.getElementById('planPop');
         planPop.style.display="block";
 
         let plan = this.getPlanGroup(groupNo);
         let planControl = document.getElementById('planControl');
 
-        let startTxt = plan.startDate.getFullYear()+"-"+(((plan.startDate.getMonth()+1)>9)?(plan.startDate.getMonth()+1):"0"+(plan.startDate.getMonth()+1))+"-"+plan.startDate.getDate();
-        let endTxt = plan.endDate.getFullYear()+"-"+(((plan.endDate.getMonth())+1>9)?(plan.endDate.getMonth()+1):"0"+(plan.endDate.getMonth()+1))+"-"+plan.endDate.getDate();
+        let startTxt = plan.startDate.getFullYear()+"-"+(((plan.startDate.getMonth()+1)>9)?(plan.startDate.getMonth()+1):"0"+(plan.startDate.getMonth()+1))+"-"+(Number(plan.startDate.getDate())<10?"0"+plan.startDate.getDate():plan.startDate.getDate());
+        let endTxt = plan.endDate.getFullYear()+"-"+(((plan.endDate.getMonth())+1>9)?(plan.endDate.getMonth()+1):"0"+(plan.endDate.getMonth()+1))+"-"+(Number(plan.endDate.getDate())<10?"0"+plan.endDate.getDate():plan.endDate.getDate());
+                
         planControl.innerHTML = "<div>제목: <input id='editTitle' value='"+plan.title+"'></div>";
         planControl.innerHTML += "<div>시작일: <input id='editStartDate' type='date' value='"+startTxt+"'><input id='editstarttime' type='number' value='"+plan.startDate.getHours()+"'></div>";
         planControl.innerHTML += "<div>종료일: <input id='editEndDate' type='date' value='"+endTxt+"'><input id='editendtime' type='number' value='"+plan.endDate.getHours()+"'></div>";
         planControl.innerHTML += "<div>메모: <input id='editMemo' value='"+plan.memo+"'></div>";
 
-        let select;
+        let select:any;
         for(let item of this.color){
             if(item == plan.color)
                 select +="<option selected value="+item+">"+item+"</option>\n"
@@ -235,25 +236,25 @@ export class Plan{
     }
 
     // plan 수정
-    editPlan(groupNo){
-        if(document.getElementById('editTitle').value==""){
+    editPlan(groupNo:any){
+        if((<HTMLInputElement>document.getElementById('editTitle')).value==""){
             alert('제목을 입력해주세요')
         } else {
-            let sd = new Date(document.getElementById('editStartDate').value);
+            let sd = new Date((<HTMLInputElement>document.getElementById('editStartDate')).value);
             sd = timeset(sd);
-            sd.setHours(sd.getHours()+document.getElementById('editstarttime').value)
+            sd.setHours(sd.getHours()+Number((<HTMLInputElement>document.getElementById('editstarttime')).value))
 
-            let ed = new Date(document.getElementById('editEndDate').value);
+            let ed = new Date((<HTMLInputElement>document.getElementById('editEndDate')).value);
             ed = timeset(ed);
-            ed.setHours(ed.getHours()+document.getElementById('editendtime').value)
+            ed.setHours(ed.getHours()+Number((<HTMLInputElement>document.getElementById('editendtime')).value))
 
             if(ed>=sd){
                 let plan = this.getPlanGroup(groupNo);
-                plan.title = document.getElementById('editTitle').value;
-                plan.color = document.getElementById('editColor').value;
+                plan.title = (<HTMLInputElement>document.getElementById('editTitle')).value;
+                plan.color = (<HTMLInputElement>document.getElementById('editColor')).value;
                 plan.startDate = sd;
                 plan.endDate = ed;
-                plan.memo = document.getElementById('editMemo').value;
+                plan.memo = (<HTMLInputElement>document.getElementById('editMemo')).value;
 
                 this.saveLocal();
                 calendar.changeDate(0);
@@ -264,7 +265,7 @@ export class Plan{
         }
 
     }
-    deletePlan(groupNo){
+    deletePlan(groupNo:any){
         for(let i = 0 ; i< this.planGroup.length;i++){
             if(this.planGroup[i].groupNo==groupNo){
                 this.planGroup.splice(i, 1);
@@ -298,7 +299,7 @@ class Calendar {
     }
 
     //날짜를 바꾸어 달력을 다시 생성
-    changeDate(num){
+    changeDate(num:any){
         this.deleteCal();
         if(this.mode ==0){
             this.time.setMonth(this.time.getMonth()+num);
@@ -314,19 +315,19 @@ class Calendar {
 
         this.timeView();
     }
-    addDays(days) {
+    addDays(days:any) {
         this.time.setDate(this.time.getDate() + days);
     }
     goToday(){
         this.time = new Date();
         this.changeDate(0);
     }
-    changeMode(num){
+    changeMode(num:number){
         this.mode = num;
         this.changeDate(0);
 
     }
-    daysInMonth (month, year) {
+    daysInMonth (month:any, year:any) {
         return new Date(year, month+1, 0).getDate();
     }
     monthBuild(){
@@ -342,8 +343,8 @@ class Calendar {
     makeMonthCal(){
         let thead = document.getElementById("calHeader");
         let tbody = document.getElementById("calBody");
-        let hrow = thead.insertRow(thead.rows.length);
-        let row = tbody.insertRow(tbody.rows.length);
+        let hrow = (<HTMLTableElement>thead).insertRow((<HTMLTableElement>thead).rows.length);
+        let row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
         let totalDay = this.monthBuild();
 
 
@@ -375,10 +376,10 @@ class Calendar {
             } else {
                 cell.className="month";
             }
-            cell.setAttribute('id',i+1);
+            cell.setAttribute('id',String(i)+1);
             this.plan.planSearch(new Date(this.time.getFullYear(),this.time.getMonth(),0),new Date(this.time.getFullYear(),this.time.getMonth()+1,0),
                     this.time.getFullYear(),this.time.getMonth(),i+1,
-                    planList =>{
+                    (planList:any) =>{
                 let inner =  "<div onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(i+1)+")'>"+(i+1)+"</div>";
                 let over=0;
                 for(let j = 0 ; j<planList.length;j++){
@@ -408,7 +409,7 @@ class Calendar {
 
 
                 if((i+totalDay+1)%7==0){
-                    row = tbody.insertRow(tbody.rows.length);
+                    row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
                 }
             });
 
@@ -420,7 +421,7 @@ class Calendar {
 
         let thead = document.getElementById("calHeader");
         let tbody = document.getElementById("calBody");
-        let hrow = thead.insertRow(thead.rows.length);
+        let hrow = (<HTMLTableElement>thead).insertRow((<HTMLTableElement>thead).rows.length);
 
         let now = this.time.getDay();
 
@@ -437,7 +438,7 @@ class Calendar {
         }
         let today = new Date();
         for(let hour = 0;hour < 24; hour++){
-            let row = tbody.insertRow(tbody.rows.length);
+            let row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
             for(let i = 0 ; i<8;i++){
                 let cell = row.insertCell();
                 if(i==0){
@@ -463,7 +464,7 @@ class Calendar {
         let now = this.time.getDay();
         let s = (new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now));
         let e = (new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now+7));
-        let check = [];
+        let check:any = [];
         for(let i=0 ; i <7 ; i++){
             check[i] = [];
             for(let j =0; j<24;j++ ){
@@ -473,7 +474,7 @@ class Calendar {
         for(let i = 0 ; i<7;i++){   //각 시간별로 일정의 수를 먼저 저장
             this.plan.planSearch(s,e,
                 this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now+i,
-                planList =>{
+                (planList:any) =>{
                     for(let item of planList){
                         item.end = item.end==-1?23:item.end;
                         item.start = item.start==-1?0:item.start;
@@ -488,8 +489,8 @@ class Calendar {
 
             this.plan.planSearch(s,e,
                 this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now+i,
-                    planList =>{
-                let position = [];
+                    (planList:any) =>{
+                let position:any = [];
                 for(let j = 0 ; j<24 ; j++)
                     position.push(-1)
                 for(let j = 0;j< planList.length ; j++){
@@ -530,7 +531,7 @@ class Calendar {
         let tbody = document.getElementById("calBody");
 
 
-        let hrow = thead.insertRow(thead.rows.length);
+        let hrow = (<HTMLTableElement>thead).insertRow((<HTMLTableElement>thead).rows.length);
 
         let now = this.time.getDay();
 
@@ -540,7 +541,7 @@ class Calendar {
 
         let today = new Date();
         for(let hour = 0;hour < 24; hour++){
-            let row = tbody.insertRow(tbody.rows.length);
+            let row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
             let cell = row.insertCell();
             cell.innerHTML = hour+"시";
 
@@ -553,21 +554,21 @@ class Calendar {
                 cell.className = "daily today";
             }
         }
-        let s = new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate());
-        let e = new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate());
+        let s:Date = new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate());
+        let e:Date = new Date(this.time.getFullYear(),this.time.getMonth(),this.time.getDate());
 
         s.setHours(0);
         e.setHours(23);
         e.setMinutes(59);
         e.setMilliseconds(59);
 
-        let check = [];
+        let check:Array<any> = [];
         for(let j =0; j<24;j++ ){
             check[j]=-1;
         }
         this.plan.planSearch(s,e, //각 시간별로 일정의 수를 먼저 저장
             this.time.getFullYear(),this.time.getMonth(),this.time.getDate(),
-            planList =>{
+            (planList:any) =>{
                 for(let item of planList){
                     item.end = item.end==-1?23:item.end;
                     item.start = item.start==-1?0:item.start;
@@ -580,8 +581,8 @@ class Calendar {
 
         this.plan.planSearch(s,e,
             this.time.getFullYear(),this.time.getMonth(),this.time.getDate(),
-            planList =>{
-                let position = [];
+            (planList:any) =>{
+                let position:any = [];
                 for(let j = 0 ; j<24 ; j++)
                     position.push(-1)
                 for(let j = 0;j< planList.length ; j++){
@@ -617,11 +618,16 @@ class Calendar {
     }
     deleteCal() {
         let caltable = document.getElementById("calendar");
-        while (caltable.rows.length > 0) {
-            caltable.deleteRow(caltable.rows.length-1);
+        while ((<HTMLTableElement>caltable).rows.length > 0) {
+            (<HTMLTableElement>caltable).deleteRow((<HTMLTableElement>caltable).rows.length-1);
         }
     }
 }
+function timeset(date:any){     //한국 시간을 맞추기 위해 사용되는 함수
+    return new Date(date.setHours(date.getHours() - 9));
+}
+let plan = new Plan;
+let calendar = new Calendar;
 function pop(){ 
     let pop = document.getElementById('pop');
     let popback = document.getElementById('popback');
@@ -639,8 +645,11 @@ function endPop(){
     popback.style.display = "none";
     pop.style.display = "none";
 }
-function timeset(date){     //한국 시간을 맞추기 위해 사용되는 함수
-    return new Date(date.setHours(date.getHours() - 9));
-}
+window.onload = function () {
+    
 let plan = new Plan;
 let calendar = new Calendar;
+    
+    
+}
+

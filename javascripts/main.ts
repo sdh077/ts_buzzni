@@ -1,5 +1,5 @@
 //계획 class
-export class Plan{
+class Plan{
     color = ['blue','yellow','purple','red','gray','black'];
     planGroup:Array<any> = [];
     constructor(){

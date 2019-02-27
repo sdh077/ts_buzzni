@@ -64,7 +64,7 @@ class Plan{
         let diff = Math.abs(d2.getTime() - d1.getTime());
         diff = Math.ceil(diff / (1000 * 3600 * 24));
 
-        return diff+1;
+        return Number(diff)+1;
     }
 
     //plan 추가 함수
@@ -133,7 +133,7 @@ class Plan{
                 cb([]);
             let check:any =[];
             let plans:any = [];
-            for(let i =0 ; i<this.dateDiff(e,s)-1 ;i++)
+            for(let i =0 ; i<this.dateDiff(e,s) ;i++)
                 check[i]=-1;
             for(let i = 0 ; i<list.length;i++){
                 let diff:number = this.dateDiff(list[i].endDate,list[i].startDate)-1;
@@ -277,10 +277,10 @@ class Plan{
 
 //달력 생성
 class Calendar {
-    plan: Plan;
     time: any;
     mode = 0; //달력이 일간, 월간, 주간을 저장한다. 0: 월간, 1: 주간, 0: 일간
     dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    plan: Plan;
 
     constructor(){
         this.plan = new Plan;

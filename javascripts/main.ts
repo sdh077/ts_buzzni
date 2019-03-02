@@ -23,9 +23,22 @@ class Plan{
         }
 
         let today = new Date();
-        (<HTMLInputElement>document.getElementById('startDate')).value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate());
-        (<HTMLInputElement>document.getElementById('endDate')).value =today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate()+1);
+        let tomorrow = new Date();
+        tomorrow.setDate(today.getDate()+1);
 
+        let sd = document.createElement("input");
+        sd.type = "date";
+        sd.value = today.getFullYear()+"-"+((today.getMonth()+1)>9?(today.getMonth()+1):"0"+(today.getMonth()+1))+"-"+(today.getDate()>9?today.getDate():"0"+today.getDate());
+        sd.setAttribute('id','startDate');
+        document.getElementById('sdInput').innerHTML = '';
+        document.getElementById('sdInput').appendChild(sd);
+
+        let ed = document.createElement("input");
+        ed.type = "date";
+        ed.value = tomorrow.getFullYear()+"-"+((tomorrow.getMonth()+1)>9?(tomorrow.getMonth()+1):"0"+(tomorrow.getMonth()+1))+"-"+(tomorrow.getDate()>9?tomorrow.getDate():"0"+tomorrow.getDate());
+        ed.setAttribute('id','endDate');
+        document.getElementById('edInput').innerHTML = '';
+        document.getElementById('edInput').appendChild(ed);
         (<HTMLInputElement>document.getElementById('starttime')).value = today.getHours()+"";
         (<HTMLInputElement>document.getElementById('endtime')).value = today.getHours()+"";
     }
@@ -376,7 +389,7 @@ class Calendar {
             } else {
                 cell.className="month";
             }
-            cell.setAttribute('id',String(i)+1);
+            cell.setAttribute('id',String(i+1));
             this.plan.planSearch(new Date(this.time.getFullYear(),this.time.getMonth(),0),new Date(this.time.getFullYear(),this.time.getMonth()+1,0),
                     this.time.getFullYear(),this.time.getMonth(),i+1,
                     (planList:any) =>{
@@ -433,7 +446,10 @@ class Calendar {
             } else if(i==6){
                 cell.className="sat";
             }
-            cell.innerHTML=this.dayNames[i]+(this.time.getDate()+i-now);
+            let date = new Date(this.time);
+
+            date.setDate(this.time.getDate()+i-now);
+            cell.innerHTML=this.dayNames[i]+(date.getDate());
             cell.setAttribute('onclick',"plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(this.time.getDate()-now+i)+")")
         }
         let today = new Date();
@@ -442,7 +458,7 @@ class Calendar {
             for(let i = 0 ; i<8;i++){
                 let cell = row.insertCell();
                 if(i==0){
-                    cell.innerHTML=hour+"시";
+                    cell.innerHTML=((hour+11)%12+1)+"시";
                 } else if(((this.time.getDate()+i-now-1)==today.getDate())&&this.timeEuqal()){
                     cell.className="today";
                 } else if(i==1){

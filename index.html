@@ -18,9 +18,9 @@
         <button onclick="calendar.goToday()">오늘</button>
     </div>
     <div class="mode">
-        <button onclick="calendar.changeMode(2)">일간</button>
-        <button onclick="calendar.changeMode(1)">주간</button>
-        <button onclick="calendar.changeMode(0)">월간</button>
+        <button id="mode2" onclick="calendar.changeMode(2)">일간</button>
+        <button id="mode1" onclick="calendar.changeMode(1)">주간</button>
+        <button id="mode0" onclick="calendar.changeMode(0)">월간</button>
         <button onclick="pop()" style="margin-left: 20px;">일정 추가</button>
         <button onclick="plan.viewplan()">일정 보기</button>
 
@@ -59,12 +59,12 @@
             <div><span>제목</span><input id="title"></div>
             <div>
                 <span>시작일시</span>
-                <input id="startDate" type="date">
+                <span id="sdInput"></span>
                 <input id="starttime" type="number" placeholder="10">시
             </div>
             <div>
                 <span>종료일시</span>
-                <input id="endDate" type="date">
+                <span id="edInput"></span>
                 <input id="endtime" type="number" placeholder="10">시
             </div>
             <div><span>메모</span><input id="memo"></div>

@@ -1,5 +1,3 @@
-"use strict";
-exports.__esModule = true;
 //계획 class
 var Plan = /** @class */ (function () {
     function Plan() {
@@ -23,8 +21,20 @@ var Plan = /** @class */ (function () {
             }
         }
         var today = new Date();
-        document.getElementById('startDate').value = today.getFullYear() + "-" + ((today.getMonth() + 1) > 9 ? (today.getMonth() + 1) : "0" + (today.getMonth() + 1)) + "-" + (today.getDate());
-        document.getElementById('endDate').value = today.getFullYear() + "-" + ((today.getMonth() + 1) > 9 ? (today.getMonth() + 1) : "0" + (today.getMonth() + 1)) + "-" + (today.getDate() + 1);
+        var tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        var sd = document.createElement("input");
+        sd.type = "date";
+        sd.value = today.getFullYear() + "-" + ((today.getMonth() + 1) > 9 ? (today.getMonth() + 1) : "0" + (today.getMonth() + 1)) + "-" + (today.getDate() > 9 ? today.getDate() : "0" + today.getDate());
+        sd.setAttribute('id', 'startDate');
+        document.getElementById('sdInput').innerHTML = '';
+        document.getElementById('sdInput').appendChild(sd);
+        var ed = document.createElement("input");
+        ed.type = "date";
+        ed.value = tomorrow.getFullYear() + "-" + ((tomorrow.getMonth() + 1) > 9 ? (tomorrow.getMonth() + 1) : "0" + (tomorrow.getMonth() + 1)) + "-" + (tomorrow.getDate() > 9 ? tomorrow.getDate() : "0" + tomorrow.getDate());
+        ed.setAttribute('id', 'endDate');
+        document.getElementById('edInput').innerHTML = '';
+        document.getElementById('edInput').appendChild(ed);
         document.getElementById('starttime').value = today.getHours() + "";
         document.getElementById('endtime').value = today.getHours() + "";
     };
@@ -60,7 +70,7 @@ var Plan = /** @class */ (function () {
         d2.setHours(3);
         var diff = Math.abs(d2.getTime() - d1.getTime());
         diff = Math.ceil(diff / (1000 * 3600 * 24));
-        return diff + 1;
+        return Number(diff) + 1;
     };
     //plan 추가 함수
     Plan.prototype.addPlan = function () {
@@ -127,7 +137,7 @@ var Plan = /** @class */ (function () {
                 cb([]);
             var check = [];
             var plans = [];
-            for (var i = 0; i < _this.dateDiff(e, s) - 1; i++)
+            for (var i = 0; i < _this.dateDiff(e, s); i++)
                 check[i] = -1;
             for (var i = 0; i < list.length; i++) {
                 var diff = _this.dateDiff(list[i].endDate, list[i].startDate) - 1;
@@ -258,7 +268,6 @@ var Plan = /** @class */ (function () {
     };
     return Plan;
 }());
-exports.Plan = Plan;
 //달력 생성
 var Calendar = /** @class */ (function () {
     function Calendar() {
@@ -354,7 +363,7 @@ var Calendar = /** @class */ (function () {
             else {
                 cell.className = "month";
             }
-            cell.setAttribute('id', String(i) + 1);
+            cell.setAttribute('id', String(i + 1));
             this_1.plan.planSearch(new Date(this_1.time.getFullYear(), this_1.time.getMonth(), 0), new Date(this_1.time.getFullYear(), this_1.time.getMonth() + 1, 0), this_1.time.getFullYear(), this_1.time.getMonth(), i + 1, function (planList) {
                 var inner = "<div onclick='plan.showPlan(" + _this.time.getFullYear() + "," + (_this.time.getMonth() + 1) + "," + (i + 1) + ")'>" + (i + 1) + "</div>";
                 var over = 0;
@@ -405,7 +414,9 @@ var Calendar = /** @class */ (function () {
             else if (i == 6) {
                 cell.className = "sat";
             }
-            cell.innerHTML = this.dayNames[i] + (this.time.getDate() + i - now);
+            var date = new Date(this.time);
+            date.setDate(this.time.getDate() + i - now);
+            cell.innerHTML = this.dayNames[i] + (date.getDate());
             cell.setAttribute('onclick', "plan.showPlan(" + this.time.getFullYear() + "," + (this.time.getMonth() + 1) + "," + (this.time.getDate() - now + i) + ")");
         }
         var today = new Date();
@@ -414,7 +425,7 @@ var Calendar = /** @class */ (function () {
             for (var i = 0; i < 8; i++) {
                 var cell = row.insertCell();
                 if (i == 0) {
-                    cell.innerHTML = hour + "시";
+                    cell.innerHTML = ((hour + 11) % 12 + 1) + "시";
                 }
                 else if (((this.time.getDate() + i - now - 1) == today.getDate()) && this.timeEuqal()) {
                     cell.className = "today";
@@ -603,7 +614,3 @@ function endPop() {
     popback.style.display = "none";
     pop.style.display = "none";
 }
-window.onload = function () {
-    var plan = new Plan;
-    var calendar = new Calendar;
-};

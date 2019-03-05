@@ -291,7 +291,7 @@ class Plan{
 //달력 생성
 class Calendar {
     time: any;
-    mode = 0; //달력이 일간, 월간, 주간을 저장한다. 0: 월간, 1: 주간, 0: 일간
+    mode = 0; //달력이 일간, 월간, 주간을 저장한다. 0: 월간, 1: 주간, 2: 일간
     dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
     plan: Plan;
 
@@ -301,9 +301,6 @@ class Calendar {
         this.timeView();
         this.changeDate(0);
     }
-    getMode(){
-        return this.mode;
-    }
 
     // 현 시각을 보여준다
     timeView(){
@@ -312,7 +309,7 @@ class Calendar {
     }
 
     //날짜를 바꾸어 달력을 다시 생성
-    changeDate(num:any){
+    changeDate(num:any){ //num = 1 날짜 추가 num = -1 날짜 빼기 num = 0 달력 reload
         this.deleteCal();
         if(this.mode ==0){
             this.time.setMonth(this.time.getMonth()+num);
@@ -322,8 +319,8 @@ class Calendar {
             this.makeWeekCal();
         } else if (this.mode ==2){
             this.addDays(num);
-            plan.showPlan(this.time.getFullYear(),this.time.getMonth()+1,this.time.getDate());
             this.makeDailyCal();
+            plan.showPlan(this.time.getFullYear(),this.time.getMonth()+1,this.time.getDate());
         }
 
         this.timeView();
@@ -358,9 +355,9 @@ class Calendar {
         let tbody = document.getElementById("calBody");
         let hrow = (<HTMLTableElement>thead).insertRow((<HTMLTableElement>thead).rows.length);
         let row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
-        let totalDay = this.monthBuild();
+        let firstDay = this.monthBuild(); //달의 첫날의 요일
 
-
+        //달력 header 생성
         for(let i = 0 ; i<7;i++){
             let cell = hrow.insertCell();
             if(i==0){
@@ -371,20 +368,20 @@ class Calendar {
             cell.innerHTML=this.dayNames[i];
         }
 
-
-        for(let i = 0 ; i<totalDay;i++){
+        //달에 첫날 전 빈칸 채우기
+        for(let i = 0 ; i<firstDay;i++){
             row.insertCell(0);
         }
-        let days = this.daysInMonth(this.time.getMonth(),this.time.getFullYear());
+        let days = this.daysInMonth(this.time.getMonth(),this.time.getFullYear()); //달에 며칠이 있는지 불러온다
         let today = new Date();
         for(let i = 0 ; i<days;i++){
             let cell = row.insertCell();
 
             if(((i+1)==today.getDate())&& this.timeEuqal()){
                 cell.className="today month";
-            } else if((i+totalDay)%7==0){
+            } else if((i+firstDay)%7==0){
                 cell.className="sun month";
-            } else if((i+totalDay+1)%7==0){
+            } else if((i+firstDay+1)%7==0){
                 cell.className="sat month";
             } else {
                 cell.className="month";
@@ -393,35 +390,32 @@ class Calendar {
             this.plan.planSearch(new Date(this.time.getFullYear(),this.time.getMonth(),0),new Date(this.time.getFullYear(),this.time.getMonth()+1,0),
                     this.time.getFullYear(),this.time.getMonth(),i+1,
                     (planList:any) =>{
-                let inner =  "<div onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(i+1)+")'>"+(i+1)+"</div>";
+                let inner =  `<div onclick='plan.showPlan(${this.time.getFullYear()},${(this.time.getMonth()+1)},${(i+1)})'>${(i+1)}</div>`;
                 let over=0;
                 for(let j = 0 ; j<planList.length;j++){
                     if(planList[j].order<3){
                         if(planList[j].start!=-1 && planList[j].end!=-1){//시작 끝 동시
-                            inner+="<div onclick='plan.planPop("+planList[j].groupNo+")' class='orderBoth order"+planList[j].order+" "+planList[j].color+"'>&nbsp;"+planList[j].title+"</div>"
+                            inner+=`<div onclick='plan.planPop("${planList[j].groupNo}")' class='orderBoth order${planList[j].order} ${planList[j].color}'>&nbsp;${planList[j].title}</div>`
 
                         } else if(planList[j].start!=-1 ){ //시작
-                            inner+="<div onclick='plan.planPop("+planList[j].groupNo+")' class='orderStart order"+planList[j].order+" "+planList[j].color+"'> &nbsp;"+planList[j].title+"</div>"
+                            inner+=`<div onclick='plan.planPop("${planList[j].groupNo}")' class='orderStart order${planList[j].order} ${planList[j].color}'> &nbsp;${planList[j].title}</div>`
 
                         } else if(planList[j].end!=-1){//끝
-                            inner+="<div onclick='plan.planPop("+planList[j].groupNo+")' class='orderEnd order"+planList[j].order+" "+planList[j].color+"'>&nbsp;"+"</div>"
+                            inner+=`<div onclick='plan.planPop("${planList[j].groupNo}")' class='orderEnd order${planList[j].order} ${planList[j].color}'>&nbsp;</div>`
 
                         } else { //가운데
-                            inner+="<div onclick='plan.planPop("+planList[j].groupNo+")' class='order order"+planList[j].order+" "+planList[j].color+"'>&nbsp; </div>"
+                            inner+=`<div onclick='plan.planPop("${planList[j].groupNo}")' class='order order${planList[j].order} ${planList[j].color}'>&nbsp; </div>`
                         }
                     } else {
                         over++;
                     }
                     if( j == planList.length-1 && over>0)
-                        inner+="<div class='order over' onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(i+1)+")'>외 "+over+"개</div>"
+                        inner+=`<div class='order over' onclick='plan.showPlan(${this.time.getFullYear()},${(this.time.getMonth()+1)},${(i+1)})'>외 ${over}개</div>`
                 }
-
-
-
                         cell.innerHTML=inner;
 
-
-                if((i+totalDay+1)%7==0){
+                //토요일 이후 날짜를 다음 칸으로 넘기기
+                if((i+firstDay+1)%7==0){
                     row = (<HTMLTableElement>tbody).insertRow((<HTMLTableElement>tbody).rows.length);
                 }
             });
@@ -487,56 +481,53 @@ class Calendar {
                 check[i][j]=-1;
             }
         }
-        for(let i = 0 ; i<7;i++){   //각 시간별로 일정의 수를 먼저 저장
-            this.plan.planSearch(s,e,
-                this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now+i,
-                (planList:any) =>{
-                    for(let item of planList){
-                        item.end = item.end==-1?23:item.end;
-                        item.start = item.start==-1?0:item.start;
-                        let height = item.end - item.start+1;
-                        for(let size = item.start ; size < item.start+height;size++){
-                            check[i][size]++;
-                        }
-                    }
-                })
-        }
+        console.log(check);
         for(let i = 0 ; i<7;i++){
 
             this.plan.planSearch(s,e,
                 this.time.getFullYear(),this.time.getMonth(),this.time.getDate()-now+i,
                     (planList:any) =>{
-                let position:any = [];
-                for(let j = 0 ; j<24 ; j++)
-                    position.push(-1)
-                for(let j = 0;j< planList.length ; j++){
-                    planList[j].end = planList[j].end==-1?23:planList[j].end;
-                    planList[j].start = planList[j].start==-1?0:planList[j].start;
-                    let height = planList[j].end - planList[j].start+1;
-
-                    for(let cnt = planList[j].start; cnt<planList[j].end+1 ;cnt++ ){
-                        position[cnt]++;
-                    }
-
-                    let bar = document.getElementById(planList[j].day+'-'+planList[j].start);
-
-                    if(check[i][planList[j].start]>2){
-                        if(position[planList[j].start]<3){
-                            let leftMargin = 1+(90 / (4))*position[planList[j].start];
-                            bar.innerHTML += "<div onclick='plan.planPop("+planList[j].groupNo+")' class='weekbar "+planList[j].color+"' style='left:"+leftMargin+"%;width: calc(90% / "+(4)+");height: calc(19px + 22px * "+(height-1)+");'>"+planList[j].title+"</div>";
-                        } else if(position[planList[j].start] ==3){
-                            bar.innerHTML += "<div class='weekETC' onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(this.time.getDate()-now+i)+")'>+"+(check[i][planList[j].start]-2)+"</div>"
+                        for(let item of planList){
+                            item.end = item.end==-1?23:item.end;
+                            item.start = item.start==-1?0:item.start;
+                            let height = item.end - item.start+1;
+                            for(let size = item.start ; size < item.start+height;size++){
+                                check[i][size]++;
+                            }
                         }
-                    } else {
-                        let widthSize =check[i][planList[j].start];
-                        for(let due = 0 ; due <planList[j].end -planList[j].start+1;due++){
-                            widthSize = widthSize>=check[i][planList[j].start+due]?widthSize:check[i][planList[j].start+due];
-                        }
-                        let leftMargin = 1+(90 / (widthSize+1))*position[planList[j].start];
-                        bar.innerHTML += "<div onclick='plan.planPop("+planList[j].groupNo+")' class='weekbar "+planList[j].color+"' style='left:"+leftMargin+"%;width: calc(90% / "+(widthSize+1)+");height: calc(19px + 22px * "+(height-1)+");'>"+planList[j].title+"</div>";
+                        let position:any = [];
+                        for(let j = 0 ; j<24 ; j++)
+                            position.push(-1)
+                        for(let j = 0;j< planList.length ; j++){
+                            //-1인 시간을 0 또는 23으로 정리
+                            planList[j].end = (planList[j].end+24) % 24 //==-1?23:planList[j].end;
+                            planList[j].start = planList[j].start==-1?0:planList[j].start;
 
-                    }
-                }
+                            let height = planList[j].end - planList[j].start+1;
+
+                            for(let cnt = planList[j].start; cnt<planList[j].end+1 ;cnt++ ){
+                                position[cnt]++;
+                            }
+
+                            let bar = document.getElementById(planList[j].day+'-'+planList[j].start);
+
+                            if(check[i][planList[j].start]>2){
+                                if(position[planList[j].start]<3){
+                                    let leftMargin = (98 / (4))*position[planList[j].start];
+                                    bar.innerHTML += "<div onclick='plan.planPop("+planList[j].groupNo+")' class='weekbar "+planList[j].color+"' style='left:"+leftMargin+"%;width: calc(98% / "+(4)+");height: calc(19px + 22px * "+(height-1)+");'>"+planList[j].title+"</div>";
+                                } else if(position[planList[j].start] ==3){
+                                    bar.innerHTML += "<div class='weekETC' onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(this.time.getDate()-now+i)+")'>+"+(check[i][planList[j].start]-2)+"</div>"
+                                }
+                            } else {
+                                let widthSize =check[i][planList[j].start];
+                                for(let due = 0 ; due <planList[j].end -planList[j].start+1;due++){
+                                    widthSize = widthSize>=check[i][planList[j].start+due]?widthSize:check[i][planList[j].start+due];
+                                }
+                                let leftMargin = 1+(98 / (widthSize+1))*position[planList[j].start];
+                                bar.innerHTML += "<div onclick='plan.planPop("+planList[j].groupNo+")' class='weekbar "+planList[j].color+"' style='left:"+leftMargin+"%;width: calc(98% / "+(widthSize+1)+");height: calc(19px + 22px * "+(height-1)+");'>"+planList[j].title+"</div>";
+
+                            }
+                        }
             })
         }
     }
@@ -582,7 +573,8 @@ class Calendar {
         for(let j =0; j<24;j++ ){
             check[j]=-1;
         }
-        this.plan.planSearch(s,e, //각 시간별로 일정의 수를 먼저 저장
+
+        this.plan.planSearch(s,e,
             this.time.getFullYear(),this.time.getMonth(),this.time.getDate(),
             (planList:any) =>{
                 for(let item of planList){
@@ -593,11 +585,7 @@ class Calendar {
                         check[size]++;
                     }
                 }
-        });
 
-        this.plan.planSearch(s,e,
-            this.time.getFullYear(),this.time.getMonth(),this.time.getDate(),
-            (planList:any) =>{
                 let position:any = [];
                 for(let j = 0 ; j<24 ; j++)
                     position.push(-1)
@@ -615,7 +603,7 @@ class Calendar {
 
                     if(check[planList[j].start]>2){
                         if(position[planList[j].start]<3){
-                            let leftMargin = 1+(96 / (4))*position[planList[j].start];
+                            let leftMargin = (96 / (4))*position[planList[j].start];
                             bar.innerHTML += "<div onclick='plan.planPop("+planList[j].groupNo+")' class='weekbar "+planList[j].color+"' style='left:"+leftMargin+"%;width: calc(96% / "+(4)+");height: calc(19px + 22px * "+(height-1)+");'>"+planList[j].title+"</div>";
                         } else if(position[planList[j].start] ==3){
                             bar.innerHTML += "<div class='dailyETC'  onclick='plan.showPlan("+this.time.getFullYear()+","+(this.time.getMonth()+1)+","+(this.time.getDate())+")'>+"+(check[planList[j].start]-2)+"</div>"

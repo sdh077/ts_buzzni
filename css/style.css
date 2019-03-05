@@ -101,15 +101,13 @@ td{
     float: left;
 }
 .weekETC{
-    left: 70%;
+    left: 76%;
     position: absolute;
-    background: white;
     top:0;
 }
 .dailyETC{
     left: 73%;
     position: absolute;
-    background: white;
     top:0;
     width:100px;
 }

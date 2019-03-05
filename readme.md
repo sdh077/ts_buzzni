@@ -147,10 +147,10 @@ groupToItem() 함수:
 planGroup으로 되어있는 data set을
 ```
 {
-    year:String,
+    year:String,    //일정의 연도, 월, 날짜를 저장
     month:String,
     day:String,
-    start: Date,
+    start: Date,    //각 날짜별 시간을 기록 만약 이어지는 경우 -1을 저장
     end: Date,
     groupNo: Number,
     title: String,
